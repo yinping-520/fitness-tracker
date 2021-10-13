@@ -8,18 +8,29 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/exercise", {
   useUnifiedTopology: true,
 });
 
+db.Workout.aggregate([
+  {
+    $addFields: {
+      totalDuration: { $sum: "$duration" },
+      totalWeight: { $sum: "$weight" },
+    },
+  },
+]);
 router.post("/", async ({ body }, res) => {
-  try{
-    const workout = await db.Workout.create(body)
-    res.json(workout)
-
-  }catch(err){res.json(err)}    
-}   
-);
+  try {
+    console.log("body",body)
+   
+    const workout = await db.Workout.create({body});
+    console.log(workout)
+    res.json(workout);
+  } catch (err) {
+    res.json(err);
+  }
+});
 
 router.get("/", async (req, res) => {
   try {
-    const workout = await db.Workout.find({})
+    const workout = await db.Workout.find({});
     res.json(workout);
   } catch (err) {
     res.json(err);
@@ -29,10 +40,15 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(req.body)
-    const workoutId = await db.Workout.findByIdAndUpdate(id,{$push: {exercises: req.body }}, {new: true});
-    console.log("workid", workoutId)
-    res.json(workoutId)
+    console.log(req.body);
+
+    //const body = JSON.stringify(req.body)
+    
+    const workoutId = await db.Workout.findByIdAndUpdate(id ,
+      { $push: { exercises: req.body } },
+      { new: true }
+    );
+    res.json(workoutId);
   } catch (err) {
     console.log(err);
     res.json(err);
@@ -40,22 +56,11 @@ router.put("/:id", async (req, res) => {
 });
 
 router.get("/range", async (req, res) => {
-    try {
-        const workoutId = await db.Workout.find({});
-      } catch (err) {
-        res.json(err);
-      }
+  try {
+    const workoutId = await db.Workout.find({});
+  } catch (err) {
+    res.json(err);
+  }
 });
-
-//   app.get("/populated", (req, res) => {
-//     db.Library.find({})
-//       .populate("books")
-//       .then(dbLibrary => {
-//         res.json(dbLibrary);
-//       })
-//       .catch(err => {
-//         res.json(err);
-//       });
-//   });
 
 module.exports = router;

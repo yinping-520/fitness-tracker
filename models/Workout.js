@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
-mongoose.Promise = global.Promise;
+//mongoose.Promise = global.Promise;mongoose.models.Workout 
 
 const Schema = mongoose.Schema;
 
 const workoutSchema = new Schema({
-  day: Date,
+  day: { type: Date },
   exercises: [
     {
       type: String,
@@ -17,7 +17,8 @@ const workoutSchema = new Schema({
       sets: Number,
     },
   ],
-});
+},
+{ typeKey: '$type' }
+);
 
-module.exports =
-  mongoose.models.Workout || mongoose.model("Workout", workoutSchema);
+module.exports = mongoose.model("Workout", workoutSchema);
