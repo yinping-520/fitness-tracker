@@ -63,7 +63,7 @@ router.get("/range", async (req, res) => {
         }
       }
     ]);
-    console.log("tatal", total)
+    console.log("tatal", data)
     res.json(data)
   } catch (err) {
     res.json(err);
