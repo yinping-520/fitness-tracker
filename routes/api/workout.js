@@ -9,21 +9,12 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/exercise", {
   useUnifiedTopology: true,
 });
 
-db.Workout.aggregate([
-  {
-    $addFields: {
-      totalDuration: { $sum: "$duration" },
-      totalWeight: { $sum: "$weight" },
-    },
-  },
-]);
 router.post("/", async ({ body }, res) => {
   try {
     const work = new Workout(body);
     work.setDate();
-    console.log("work", work);
+
     const workout = await db.Workout.create(work);
-    console.log("workout",workout);
     res.json(workout);
   } catch (err) {
     res.json(err);
@@ -32,8 +23,16 @@ router.post("/", async ({ body }, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const workout = await db.Workout.find({});
-    res.json(workout);
+    const totalDur = await db.Workout.aggregate([
+      {
+        $addFields: {
+          totalDuration: {$sum: "$exercises.duration"}
+        }
+      }
+    ]);
+
+    res.json(totalDur);
+    
   } catch (err) {
     res.json(err);
   }
@@ -43,9 +42,6 @@ router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     console.log(req.body);
-
-    //const body = JSON.stringify(req.body)
-
     const workoutId = await db.Workout.findByIdAndUpdate(
       id,
       { $push: { exercises: req.body } },
@@ -60,7 +56,15 @@ router.put("/:id", async (req, res) => {
 
 router.get("/range", async (req, res) => {
   try {
-    const workoutId = await db.Workout.find({});
+    const data = await db.Workout.aggregate([
+      {
+        $addFields: {
+          totalDuration: {$sum: "$exercises.duration"}
+        }
+      }
+    ]);
+    console.log("tatal", total)
+    res.json(data)
   } catch (err) {
     res.json(err);
   }
