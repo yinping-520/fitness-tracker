@@ -1,28 +1,32 @@
-const mongoose = require("mongoose");
-
-//mongoose.Promise = global.Promise;mongoose.models.Workout 
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
 const workoutSchema = new Schema({
-  day: Date,
+  day: {
+    type: Date,
+    default: () => new Date(),
+  },
   exercises: [
     {
-      type: String,
-      name: String,
+      type: {
+        type: String,
+        trim: true,
+      },
+      name: {
+        type: String,
+        trim: true,
+      },
       duration: Number,
-      distance: Number,
       weight: Number,
       reps: Number,
       sets: Number,
+      distance: Number,
     },
   ],
-},
-{ typeKey: '$type' });
+});
 
-workoutSchema.methods.setDate = function(){
-  this.day = new Date()
-  return this.day
-}
+const Workout = mongoose.model('Workout', workoutSchema);
 
-module.exports = mongoose.model("Workout", workoutSchema);
+module.exports = Workout;
+
