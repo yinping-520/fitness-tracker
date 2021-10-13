@@ -7,6 +7,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/exercise', {
   useNewUrlParser: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
+  useCreateIndex: true,
 });
 
 const workoutSeed = [

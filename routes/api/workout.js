@@ -3,11 +3,7 @@ const mongoose = require("mongoose");
 const db = require("../../models");
 const Workout = require("../../models/Workout");
 const { getWorkoutsInRange } = require("../../public/api");
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/exercise", {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true,
-});
+
 
 router.post("/", async ({ body }, res) => {
   try {
