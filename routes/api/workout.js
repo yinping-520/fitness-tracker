@@ -8,18 +8,18 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/exercise", {
   useUnifiedTopology: true,
 });
 
-router.post("/", ({ body }, res) => {
-    db.Exercise.create(body)
-    .then(({_id}) => db.Workout.findByIdAndUpdate({}, {$push: {exercises: _id}}, { new: true })) 
-    .then(workoutdb => res.json(workoutdb))
-    .catch(err => {res.json(err)})
-   }
+router.post("/", async ({ body }, res) => {
+  try{
+    const workout = await db.Workout.create(body)
+    res.json(workout)
+
+  }catch(err){res.json(err)}    
+}   
 );
 
 router.get("/", async (req, res) => {
   try {
     const workout = await db.Workout.find({})
-    console.log(workout);
     res.json(workout);
   } catch (err) {
     res.json(err);
@@ -29,9 +29,12 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const workoutId = await db.Workout.findById(id);
+    console.log(req.body)
+    const workoutId = await db.Workout.findByIdAndUpdate(id,{$push: {exercises: req.body }}, {new: true});
+    console.log("workid", workoutId)
     res.json(workoutId)
   } catch (err) {
+    console.log(err);
     res.json(err);
   }
 });
@@ -43,8 +46,6 @@ router.get("/range", async (req, res) => {
         res.json(err);
       }
 });
-
-
 
 //   app.get("/populated", (req, res) => {
 //     db.Library.find({})
