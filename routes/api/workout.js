@@ -26,13 +26,12 @@ router.get("/", async (req, res) => {
     const totalDur = await db.Workout.aggregate([
       {
         $addFields: {
-          totalDuration: {$sum: "$exercises.duration"}
-        }
-      }
+          totalDuration: { $sum: "$exercises.duration" },
+        },
+      },
     ]);
 
     res.json(totalDur);
-    
   } catch (err) {
     res.json(err);
   }
@@ -41,7 +40,6 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(req.body);
     const workoutId = await db.Workout.findByIdAndUpdate(
       id,
       { $push: { exercises: req.body } },
@@ -59,12 +57,12 @@ router.get("/range", async (req, res) => {
     const data = await db.Workout.aggregate([
       {
         $addFields: {
-          totalDuration: {$sum: "$exercises.duration"}
-        }
-      }
+          totalDuration: { $sum: "$exercises.duration" },
+        },
+      },
     ]);
-    console.log("tatal", data)
-    res.json(data)
+
+    res.json(data.slice(-7));
   } catch (err) {
     res.json(err);
   }
