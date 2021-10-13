@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 const db = require("../../models");
+const Workout = require("../../models/Workout");
 const { getWorkoutsInRange } = require("../../public/api");
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/exercise", {
   useNewUrlParser: true,
@@ -18,10 +19,11 @@ db.Workout.aggregate([
 ]);
 router.post("/", async ({ body }, res) => {
   try {
-    console.log("body",body)
-   
-    const workout = await db.Workout.create({body});
-    console.log(workout)
+    const work = new Workout(body);
+    work.setDate();
+    console.log("work", work);
+    const workout = await db.Workout.create(work);
+    console.log("workout",workout);
     res.json(workout);
   } catch (err) {
     res.json(err);
@@ -43,8 +45,9 @@ router.put("/:id", async (req, res) => {
     console.log(req.body);
 
     //const body = JSON.stringify(req.body)
-    
-    const workoutId = await db.Workout.findByIdAndUpdate(id ,
+
+    const workoutId = await db.Workout.findByIdAndUpdate(
+      id,
       { $push: { exercises: req.body } },
       { new: true }
     );
