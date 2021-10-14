@@ -24,15 +24,15 @@ function populateChart(data) {
 
   const labels = data.map(({ day }) => {
     let date = new Date(day);
-    console.log(day);
-    console.log(date);
+    // console.log(day);
+    // console.log(date);
 
     // Use JavaScript's `Intl` object to help format dates
-    return console.log(new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
-    }).format())
+    }).format(date)
   });
 
   let lineChart = new Chart(line, {

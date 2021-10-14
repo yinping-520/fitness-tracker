@@ -26,6 +26,7 @@ router.get("/", async (req, res) => {
         },
       },
     ]);
+    console.log("Tduration",totalDur)
 
     res.json(totalDur);
   } catch (err) {
