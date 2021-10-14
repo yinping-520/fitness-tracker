@@ -55,6 +55,7 @@ router.get("/range", async (req, res) => {
       {
         $addFields: {
           totalDuration: { $sum: "$exercises.duration" },
+        
         },
       },
     ]);
